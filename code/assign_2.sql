@@ -1,68 +1,78 @@
---1: Write a program to fetch data from table SALES for a given orderid and display the data.
---(Use %TYPE when declaring variables).
+-- 1) Write a program to fetch data from table SALES for a given orderid and display the data.
+-- (Use %TYPE when declaring variables).
 
-declare
-    d_prod_id sh.sales.prod_id%type;
-    d_cust_id sh.sales.cust_id%type := 987;
-    d_time_id sh.sales.time_id%type;
-    d_channel_id sh.sales.channel_id%type;
-    d_promo_id sh.sales.promo_id%type;
-    d_quantity_sold sh.sales.quantity_sold%type;
-    d_amount_sold sh.sales.amount_sold%type;
+declare 
+    v_sales_date sales.sales_date%type;
+    v_order_id sales.order_id%type :=1269; --just using a random one
+    v_product_id sales.product_id%type;
+    v_customer_id sales.customer_id%type;
+    v_salesperson_id sales.salesperson_id%type;
+    v_quantity sales.quantity%type;
+    v_unit_price sales.unit_price%type;
+    v_sales_amount sales.sales_amount%type;
+    v_tax_amount sales.tax_amount%type;
+    v_total_amount sales.total_amount%type;
 begin
-    select 
-        prod_id, cust_id, time_id, channel_id, promo_id, quantity_sold, amount_sold
-    into 
-        d_prod_id, d_cust_id, d_time_id, d_channel_id, d_promo_id, d_quantity_sold, d_amount_sold
-    from
-        sh.sales
-    where cust_id = d_cust_id and rownum<=1;
-    --doing this because right now, there are duplicates
+    select sales_date, order_id, product_id, customer_id, salesperson_id, quantity, unit_price, sales_amount, tax_amount, total_amount 
+    into v_sales_date, v_order_id, v_product_id, v_customer_id, v_salesperson_id, v_quantity, v_unit_price, v_sales_amount, v_tax_amount, v_total_amount
+    from sales
+    where order_id = v_order_id;
     
-    dbms_output.put_line(d_prod_id);
-    dbms_output.put_line(d_cust_id);
-    dbms_output.put_line(d_time_id);
-    dbms_output.put_line(d_channel_id);
-    dbms_output.put_line(d_promo_id);
-    dbms_output.put_line(d_quantity_sold);
-    dbms_output.put_line(d_amount_sold);
-end;   
+    --to check if correct, see if values went from table into vars
+    dbms_output.put_line(v_sales_date || '  ' ||  v_order_id || '  ' || v_product_id || '  ' || 
+    v_customer_id || '  ' || v_salesperson_id || '  ' || v_quantity || '  ' || v_unit_price || '  ' || v_sales_amount 
+    || '  ' || v_tax_amount || '  ' || v_total_amount); 
+end;
 
 
---2: Write a program to insert data into SALES table.
-
-declare
-    d_prod_id sh.sales.prod_id%type:=123;
-    d_cust_id sh.sales.cust_id%type := 11987;
-    d_time_id sh.sales.time_id%type := sysdate;
-    d_channel_id sh.sales.channel_id%type := 213;
-    d_promo_id sh.sales.promo_id%type :=1231;
-    d_quantity_sold sh.sales.quantity_sold%type :=1;
-    d_amount_sold sh.sales.amount_sold%type:=213.12;
+-- 2) Write a program to insert data into SALES table.
+declare 
+    v_sales_date sales.sales_date%type := sysdate;
+    v_order_id sales.order_id%type := 3100; --just using a random one
+    v_product_id sales.product_id%type := 200;
+    v_customer_id sales.customer_id%type := 10;
+    v_salesperson_id sales.salesperson_id%type := 1000;
+    v_quantity sales.quantity%type := 5;
+    v_unit_price sales.unit_price%type := 75;
+    v_sales_amount sales.sales_amount%type := 1500;
+    v_tax_amount sales.tax_amount%type := 40;
+    v_total_amount sales.total_amount%type := 300;
 begin
-    insert into sh.sales( 
-        prod_id, cust_id, time_id, channel_id, promo_id, quantity_sold, amount_sold)
-    values
-        (d_prod_id, d_cust_id, d_time_id, d_channel_id, d_promo_id, d_quantity_sold, d_amount_sold);
+    insert into sales
+        (sales_date, order_id, product_id, customer_id, salesperson_id, quantity, unit_price, sales_amount, tax_amount, total_amount)
+    values 
+        (v_sales_date, v_order_id, v_product_id, v_customer_id, v_salesperson_id, v_quantity, v_unit_price, v_sales_amount, v_tax_amount, v_total_amount);
     commit;
 end;
 
---3: Write a program to update data in SALES table for a given orderid (Change order
+    --to check if correct, see table vals to check if var vals went into table at the new order id
+    select * from sales where order_id = 3100;
+
+
+-- 3) Write a program to update data in SALES table for a given orderid (Change order
 -- amount to 100).
--- using cust id instead of order id
 
-declare
-    new_cust_id sh.sales.cust_id%type := 987;
+declare 
+    v_order_id sales.order_id%type := 3100; --using a random one
 begin
-    update sh.sales set amount_sold= 100 where cust_id = new_cust_id;
+    update sales 
+    set total_amount = 100
+    where order_id = v_order_id;
     commit;
 end;
-    
---:4 delete data from sales table for given customer id 
-declare
-    new_cust_id sh.sales.cust_id%type := 987;
+
+--to check if correct, see table vals to check if var vals updated table vals
+select * from sales where order_id = 3100;
+
+
+-- 4) Write a program to delete data from SALES table for a given orderid.
+declare 
+    v_order_id sales.order_id%type := 3100; --using a random one
 begin
-    update sh.sales set amount_sold= 100 where cust_id = new_cust_id;
+    delete from sales
+    where order_id = v_order_id;
     commit;
 end;
-    Write a program to delete data from SALES table for a given orderid.
+
+--to check if correct, see that order_id no longer exists
+select * from sales where order_id = 3100;
