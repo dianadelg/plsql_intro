@@ -49,6 +49,7 @@ end;
 
 --3: Write a program to update data in SALES table for a given orderid (Change order
 -- amount to 100).
+-- using cust id instead of order id
 
 declare
     new_cust_id sh.sales.cust_id%type := 987;
@@ -57,7 +58,7 @@ begin
     commit;
 end;
     
---:4 
+--:4 delete data from sales table for given customer id 
 declare
     new_cust_id sh.sales.cust_id%type := 987;
 begin
