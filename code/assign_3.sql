@@ -1,0 +1,9 @@
+-- 1) Write a procedure to fetch data from table SALES for a given parameter orderid and
+-- display the data.
+-- 2) Write a procedure which does the following operations
+--      - Fetch data from table SALES for a given parameter orderid and display the data.
+--      - Return the number of rows(using OUT parameter) in the SALES table for that
+-- sales date (get sales date from the above operation)
+-- 3) Write a function which accepts 2 numbers n1 and n2 and returns the power of n1 to n2.
+--  (Example: If I pass values 10 and 3, the output should be 1000)
+-- 4) Write a function to display the number of rows in the SALES table for a given sales date.
