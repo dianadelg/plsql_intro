@@ -74,4 +74,45 @@ END;
 -- 3) Write a function which accepts 2 numbers n1 and n2 and returns the power of n1 to n2.
 --  (Example: If I pass values 10 and 3, the output should be 1000)
 
+CREATE OR REPLACE FUNCTION funct(
+base IN NUMBER,
+exp IN NUMBER)
+RETURN NUMBER IS
+ans NUMBER := 1;
+BEGIN
+    for i in 1..exp LOOP
+        ans:=ans*base;
+    END LOOP;
+    RETURN ans;
+END;
+/
+DECLARE
+    base NUMBER;
+    exp NUMBER;
+    ans NUMBER;
+BEGIN
+    base:=10;
+    exp:=3;
+    ans:=funct(base,exp);
+    dbms_output.put_line(' ' || base || ' ^ ' || exp || ' = ' || ans);
+END;
+
 -- 4) Write a function to display the number of rows in the SALES table for a given sales date.
+
+CREATE OR REPLACE FUNCTION funct(
+i_sales_date IN DATE)
+RETURN NUMBER IS
+num_rows NUMBER := 0;
+BEGIN
+    select COUNT(1) into num_rows from sales where sales_date = i_sales_date;
+    return num_rows;
+END;
+/
+DECLARE
+    i_sales_date DATE :=  (TO_DATE ('01-JAN-2015','DD-MON-YYYY'));
+    num_rows NUMBER := 0;
+BEGIN
+    num_rows:=funct(i_sales_date);
+    dbms_output.put_line('Number of rows for sales date '|| num_rows);
+END;
+    
