@@ -1,11 +1,12 @@
--- I. Write the exceptions block for all the below procedures/functions which you have
--- written in the Exercise #3.
+CREATE OR REPLACE PACKAGE BODY
+AS
 
--- 1) Write a procedure to fetch data from table SALES for a given parameter orderid and
--- display the data.
+--1
 
-create or replace procedure get_order_data (p_order_id IN number)
-as
+PROCEDURE get_order_data (
+    p_order_id IN number
+)
+IS
     v_sales_date sales.sales_date%type;
     v_order_id sales.order_id%type; 
     v_product_id sales.product_id%type;
@@ -34,22 +35,11 @@ EXCEPTION
         dbms_output.put_line('>1 row returned');
     WHEN others THEN
         dbms_output.put_line('Other error');
-end;
-/
-exec get_order_data (1271); -- no id exists
-/
-exec get_order_data (1270); -- more than one row
-/
-exec get_order_data (1269); -- no issue
+END get_order_data;
 
+--2
 
--- 2) Write a procedure which does the following operations
---  Fetch data from table SALES for a given parameter orderid and display the
--- data.
---  Return the number of rows(using OUT parameter) in the SALES table for that
--- sales date (get sales date from the about operation)
-
-CREATE OR REPLACE PROCEDURE proc_replace (
+PROCEDURE proc_replace (
     i_order_id IN sales.order_id%type,
     o_num_rows OUT NUMBER
 ) AS
@@ -83,33 +73,15 @@ EXCEPTION
         dbms_output.put_line('>1 row returned');
     WHEN others THEN
         dbms_output.put_line('Other error');
-end;
-/
-declare
-num_row number:=0;
-begin
-    proc_replace (1271, num_row); -- no id exists
-end;
-/
-declare
-num_row number:=0;
-begin
-    proc_replace (1270, num_row); -- more than one row
-end;
-/
-declare
-num_row number:=0;
-begin
-    proc_replace (1269, num_row); -- no issue
-end;
+END proc_replace;
 
--- 3) Write a function which accepts 2 numbers N1 and N2 and returns the power of
--- N1 to N2. (Example: If I pass values 10 and 3, the output should be 1000)
+--3
 
-CREATE OR REPLACE FUNCTION funct1(
+FUNCTION funct1(
 base IN NUMBER,
 exp IN NUMBER)
-RETURN NUMBER IS
+RETURN NUMBER 
+IS
 ans NUMBER := 1;
 BEGIN
     for i in 1..exp LOOP
@@ -119,55 +91,27 @@ BEGIN
 EXCEPTION  
     WHEN OTHERS THEN   
         dbms_output.put_line('Other error');
-END;
-/
-DECLARE
-    base NUMBER;
-    exp NUMBER;
-    ans NUMBER;
-BEGIN
-    base:=10;
-    exp:=3;
-    ans:=funct(base,exp);
-    dbms_output.put_line(' ' || base || ' ^ ' || exp || ' = ' || ans);   
-END;
+END funct1;
 
--- 4) Write a function to display the number of rows in the SALES table for a given sales
--- date.
+--4 
 
-CREATE OR REPLACE FUNCTION funct2(
+FUNCTION funct2(
 i_sales_date IN DATE)
-RETURN NUMBER IS
+RETURN NUMBER 
+IS
 num_rows NUMBER := 0;
 BEGIN
     select COUNT(1) into num_rows from sales where sales_date = i_sales_date;
     return num_rows;
 END;
-/
-DECLARE
-    i_sales_date DATE :=  (TO_DATE ('01-JAN-2015','DD-MON-YYYY'));
-    num_rows NUMBER := 0;
-BEGIN
-    num_rows:=funct2(i_sales_date);
-    dbms_output.put_line('Number of rows for sales date '|| num_rows);
-EXCEPTION
-    WHEN no_data_found THEN 
-        dbms_output.put_line('No order exists with this id');
-    WHEN too_many_rows THEN
-        dbms_output.put_line('>1 row returned');
-    WHEN others THEN
-        dbms_output.put_line('Other error');
-END;
 
--- II. Write a user defined exception for function 3 which displays an exception saying “Invalid
--- Number” or “Number must be less than 100”, if it meets the below conditions
---  If N1 or N2 is null or zero
---  If N1 or N2 is greater than 100.
+--5
 
-CREATE OR REPLACE FUNCTION funct3(
+FUNCTION funct3(
 base IN NUMBER,
 exp IN NUMBER)
-RETURN NUMBER IS
+RETURN NUMBER 
+IS
 ans NUMBER := 1;
 null_or_zero_exception EXCEPTION;
 greater_than_100_exception EXCEPTION;
@@ -208,70 +152,4 @@ EXCEPTION
     WHEN others THEN
         dbms_output.put_line('other error');
         return 0;
-END;
-/
--- base null
-DECLARE
-    base NUMBER;
-    exp NUMBER;
-    ans NUMBER;
-BEGIN
-    base := null;
-    exp:=3;
-    ans:=funct3(base,exp);
-END;
-/
---exp null
-DECLARE
-    base NUMBER;
-    exp NUMBER;
-    ans NUMBER;
-BEGIN
-    base := 3;
-    exp:=NULL;
-    ans:=funct3(base,exp);
-END;
-/
---base zero
-DECLARE
-    base NUMBER;
-    exp NUMBER;
-    ans NUMBER;
-BEGIN
-    base := 0;
-    exp:=10;
-    ans:=funct3(base,exp);
-END;
-/
---exp zero
-DECLARE
-    base NUMBER;
-    exp NUMBER;
-    ans NUMBER;
-BEGIN
-    base := 10;
-    exp:=0;
-    ans:=funct3(base,exp);
-END;
-/
---base > 100
-DECLARE
-    base NUMBER;
-    exp NUMBER;
-    ans NUMBER;
-BEGIN
-    base := 1000;
-    exp:=4;
-    ans:=funct3(base,exp);
-END;
-/
---exp > 100
-DECLARE
-    base NUMBER;
-    exp NUMBER;
-    ans NUMBER;
-BEGIN
-    base := 4;
-    exp:=1000;
-    ans:=funct3(base,exp);
 END;
