@@ -138,6 +138,45 @@ select * from sales_copy_table;
 -- 5) Write a procedure to call the procedure you have created in #2 and update the column
 -- TOTAL_AMOUNT to SALES_AMOUNT + TAX_AMOUNT in the SALES table.
 
+CREATE OR REPLACE PROCEDURE amount_update (order_num NUMBER)AS
+total NUMBER:=0;
+rec sales%ROWTYPE;
+begin
+    proc(order_num, rec);
+    total := rec.sales_amount + rec.tax_amount;
+    
+    UPDATE sales set total_amount = total where order_id = order_num;
+    commit;
+end;
+/
+exec amount_update(1269);
+/
+select * from sales where order_id = 1269;
+
 
 -- 6) Write a procedure to fetch SALES_DATE, ORDER_ID, PRODUCT_ID, CUSTOMER_ID and
 -- QUANTITY from SALES table and display the data. (Use a User defined record type).
+
+CREATE OR REPLACE PROCEDURE show_data (order_num NUMBER)AS
+TYPE sales_rec IS RECORD 
+(
+    sales_date sales.sales_date%type,
+    order_id sales.order_id%type,
+    product_id sales.product_id%type,
+    customer_id sales.customer_id%type,
+    quantity sales.quantity%type
+);
+rec sales_rec;
+begin
+    
+    SELECT sales_date, order_id, product_id, customer_id, quantity
+    INTO rec FROM sales where order_id = order_num;
+    
+    dbms_output.put_line('Sales date: ' || rec.sales_date);
+    dbms_output.put_line('Order id: ' || rec.order_id);
+    dbms_output.put_line('Product Id: ' || rec.product_id);
+    dbms_output.put_line('Customer id: ' || rec.customer_id);
+    dbms_output.put_line('Quantity: ' || rec.quantity);
+end;
+/
+exec show_data(1269);
