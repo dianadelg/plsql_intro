@@ -105,6 +105,35 @@ end;
 --  Write a procedure to call the procedure you have created in #2 and insert the
 -- data in the SALES_COPY table.
 
+CREATE TABLE sales_copy_table
+AS
+select * from sales where 1=2;
+/
+CREATE OR REPLACE PROCEDURE insert_sales_data (p_order_num NUMBER)
+AS
+rec sales%ROWTYPE;
+BEGIN
+proc(p_order_num, rec);
+
+INSERT INTO sales_copy_table VALUES(
+    rec.SALES_DATE,
+    rec.ORDER_ID,
+    rec.PRODUCT_ID,
+    rec.CUSTOMER_ID,
+    rec.SALESPERSON_ID,
+    rec.QUANTITY,
+    rec.UNIT_PRICE,
+    rec.SALES_AMOUNT,
+    rec.TAX_AMOUNT,
+    rec.TOTAL_AMOUNT        
+);
+COMMIT;
+END;
+/
+EXEC insert_sales_data(1269);
+/
+select * from sales_copy_table;
+
 
 -- 5) Write a procedure to call the procedure you have created in #2 and update the column
 -- TOTAL_AMOUNT to SALES_AMOUNT + TAX_AMOUNT in the SALES table.
